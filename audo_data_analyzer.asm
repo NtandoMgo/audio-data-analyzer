@@ -85,7 +85,9 @@ read_error:
 find_min_max:
     addi $t7, $s1, 44       # skip the header-first 44 bytes, $t7 new address
     add $t8, $s0, $zero     # copy file size (boundary checking)
-    sub $t8, $t8, 44        # subtract 44 bytes (header) reamin with size of audo data
+    sub $t8, $t8, 48        # subtract 44 bytes (header) reamin with size of audo data
+                            # plus (+ 4) since this will use at the loop, will be done 
+                            # already with first 4 bytes
 
     lb $t0, 0($t7)
     lb $t1, 1($t7)
@@ -101,8 +103,9 @@ find_min_max:
     bgt $t0, $t2 change_max
 
     addi $t7, $t7, 4    #done with first 4 bytes
+    sub $t8,$t8 4 
 
-find_min_mac_loop:       #load next 4 bytes (2 vals, possible min and/or max), increment address and index until same as size
+find_min_mac_loop:       #load next 2 bytes (1 val, possible min and/or max), increment address and index until same as size
     addi $t7, $t7, 2    #move to next 2 bytes
     sub $t8, $t8, 2     # decrement my index -- (remaining size)
 
